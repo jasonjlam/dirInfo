@@ -9,23 +9,27 @@ void printDirectory(char path[200]) {
     DIR *directory = opendir(path);
     struct dirent *currentFile = readdir(directory);
     struct stat file;
-    printf("Statistic for directory: %s\n", path);
+    // printf("Statistic for directory: %s\n", path);
     for (; currentFile !=NULL; currentFile = readdir(directory), stat(currentFile->d_name, &file)) {
         size += (file.st_size);
     }
     rewinddir(directory);
-    printf("Directories:\n \t");
-    for (; currentFile !=NULL; currentFile = readdir(directory), stat(currentFile->d_name, &file)) {
-        if (S_ISDIR(file)) {
-            printf("%s \n", currentFile->d_name);
+    currentFile = readdir(directory);
+    printf("Directories:\n");
+    for (; currentFile !=NULL; currentFile = readdir(directory)) {
+        // printf("%d \n", currentFile ->d_type);
+        if (currentFile->d_type == DT_DIR) {
+            printf("\t %s \n", currentFile->d_name);
         }
     }
-    printf("Regular files: \n \t");
+    printf("Regular files: \n");
     rewinddir(directory);
-    for (; currentFile !=NULL; currentFile = readdir(directory), stat(currentFile->d_name, &file)) {
-        if (S_ISDIR(file)) {
-            printf("%s \n", currentFile->d_name);
+    currentFile = readdir(directory);
+    for (; currentFile !=NULL; currentFile = readdir(directory)) {
+        // ("%d \n", currentFile ->d_type);
+        if (currentFile->d_type == DT_REG) {
+            printf("\t %s \n", currentFile->d_name);
         }
     }
-    printf("Total Directory Size: %d Bytes \n", size);
+    printf("\nTotal Directory Size: %d Bytes \n", size);
 }
